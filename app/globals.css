@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-void text-fg font-mono antialiased;
+    font-feature-settings: "ss01", "cv01";
+    selection: none;
+  }
+  ::selection { @apply bg-tac text-void; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #08090a; border-left: 1px solid #1e2225; }
+  ::-webkit-scrollbar-thumb { background: #1e2225; }
+  ::-webkit-scrollbar-thumb:hover { background: #2c3338; }
+}
+
+@layer components {
+  /* Subtle scanline overlay - CRT/HUD feel, very faint */
+  .scanlines::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(110, 232, 95, 0.012) 3px,
+      transparent 4px
+    );
+  }
+
+  /* Topographic / grid background */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(110, 232, 95, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(110, 232, 95, 0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Corner-bracket framed panel */
+  .hud-panel {
+    @apply relative border border-line bg-panel;
+  }
+  .hud-panel::before,
+  .hud-panel::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-color: #6ee85f;
+    opacity: 0.6;
+    transition: opacity 0.4s;
+  }
+  .hud-panel::before {
+    top: -1px; left: -1px;
+    border-top: 1.5px solid;
+    border-left: 1.5px solid;
+  }
+  .hud-panel::after {
+    bottom: -1px; right: -1px;
+    border-bottom: 1.5px solid;
+    border-right: 1.5px solid;
+  }
+  .hud-panel:hover::before,
+  .hud-panel:hover::after { opacity: 1; }
+
+  /* Tactical label - small mono caps */
+  .t-label {
+    @apply font-mono uppercase tracking-wide2 text-muted;
+    font-size: 11px;
+  }
+
+  /* Blinking active dot */
+  .blink { animation: blink 1.6s step-end infinite; }
+  @keyframes blink {
+    0%, 60% { opacity: 1; }
+    61%, 100% { opacity: 0.25; }
+  }
+
+  /* Scan sweep on section reveal */
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #6ee85f, transparent);
+    opacity: 0.7;
+  }
+
+  /* Underline link */
+  .t-link { position: relative; }
+  .t-link::after {
+    content: "";
+    position: absolute; bottom: -3px; left: 0;
+    width: 100%; height: 1px; background: #6ee85f;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .t-link:hover::after { transform: scaleX(1); }
+
+  /* Ghost watermark letterform */
+  .ghost-text {
+    -webkit-text-stroke: 1px rgba(232, 234, 232, 0.05);
+    color: transparent;
+    user-select: none;
+  }
+
+  /* Objective bullets - marker shares the first line's metrics so it always
+     aligns with the text regardless of font/line-height. */
+  .obj-item {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+  .obj-item::before {
+    content: "\25B8";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #6ee85f;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
