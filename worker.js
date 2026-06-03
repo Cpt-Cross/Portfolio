@@ -21,33 +21,30 @@ const LINKS = {
   resume:    "https://captaincross.net/Aditya_Kumar_Resume_2026Q2.pdf",
 };
 
-// YouTube handles for the latest-video thumbnail resolver.
-const YT_HANDLES = {
-  main: "CaptainCross",
-  vods: "captaincrossstreamhighlights",
-};
+// Hardcoded channel id = bulletproof, no scraping. Add the VODs channel id here
+// later if you want a thumbnail on that card too.
+const YT_CHANNELS = { main: "UCkkRErIjm5gBzNsBONJxkBA" };
+const YT_HANDLES  = { vods: "captaincrossstreamhighlights" };
 
 async function ytThumb(url) {
   const seg = (url.pathname.split("/").pop() || "main").toLowerCase();
-  const handle = YT_HANDLES[seg] || YT_HANDLES.main;
-  const cfCache = { cacheTtl: 86400, cacheEverything: true }; // refresh ~daily
+  const cf = { cacheTtl: 86400, cacheEverything: true }; // refresh ~daily
   try {
-    const page = await fetch(`https://www.youtube.com/@${handle}/videos`, {
-      headers: { "user-agent": "Mozilla/5.0 (compatible; CaptainCrossBot/1.0)", "accept-language": "en-US" },
-      cf: cfCache,
-    });
-    const html = await page.text();
-    // Newest video id is usually in the initial data on the /videos page.
-    let vid = (html.match(/"videoId":"([0-9A-Za-z_-]{11})"/) || [])[1];
-    if (!vid) {
-      const cid = (html.match(/"channelId":"(UC[0-9A-Za-z_-]{20,})"/) ||
-                   html.match(/channel\/(UC[0-9A-Za-z_-]{20,})/) || [])[1];
-      if (cid) {
-        const rss = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${cid}`, { cf: cfCache });
-        const xml = await rss.text();
-        vid = (xml.match(/<yt:videoId>([0-9A-Za-z_-]{11})<\/yt:videoId>/) || [])[1];
-      }
+    let cid = YT_CHANNELS[seg];
+    if (!cid) {
+      const handle = YT_HANDLES[seg] || "CaptainCross";
+      const page = await fetch(`https://www.youtube.com/@${handle}/videos`, {
+        headers: { "user-agent": "Mozilla/5.0 (compatible; CaptainCrossBot/1.0)", "accept-language": "en-US" },
+        cf,
+      });
+      const html = await page.text();
+      cid = (html.match(/"channelId":"(UC[0-9A-Za-z_-]{20,})"/) ||
+             html.match(/channel\/(UC[0-9A-Za-z_-]{20,})/) || [])[1];
     }
+    if (!cid) return new Response("no channel", { status: 404 });
+    const rss = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${cid}`, { cf });
+    const xml = await rss.text();
+    const vid = (xml.match(/<yt:videoId>([0-9A-Za-z_-]{11})<\/yt:videoId>/) || [])[1];
     if (!vid) return new Response("no video", { status: 404 });
     return Response.redirect(`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, 302);
   } catch (e) {
@@ -59,10 +56,8 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // 1. live thumbnail resolver
     if (url.pathname.startsWith("/api/yt-thumb")) return ytThumb(url);
 
-    // 2. tracked redirects
     const key = url.pathname.replace(/^\/+|\/+$/g, "").toLowerCase();
     const dest = LINKS[key];
     if (dest) {
@@ -81,7 +76,6 @@ export default {
       return Response.redirect(dest, 302);
     }
 
-    // 3. everything else: the static site
     return env.ASSETS.fetch(request);
   },
 };
