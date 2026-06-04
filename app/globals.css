@@ -129,3 +129,41 @@
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
+
+/* ---- /connect tactical motion (Modern Warfare style) ---- */
+@keyframes cc-scan-sweep {
+  0%   { transform: translateY(-120%); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(280%); opacity: 0; }
+}
+@keyframes cc-bg-drift {
+  0%   { transform: translateY(-12vh); }
+  100% { transform: translateY(112vh); }
+}
+@keyframes cc-avatar-sweep {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(220%); }
+}
+.cc-sweep {
+  position: absolute; left: 0; right: 0; top: 0; height: 38%;
+  background: linear-gradient(to bottom, transparent, rgba(110,232,95,0.12), transparent);
+  opacity: 0; pointer-events: none; z-index: 1;
+}
+.group:hover .cc-sweep { animation: cc-scan-sweep 0.9s ease-in-out; }
+.cc-bg-sweep {
+  position: fixed; left: 0; right: 0; top: 0; height: 30vh;
+  background: linear-gradient(to bottom, transparent, rgba(110,232,95,0.045), transparent);
+  pointer-events: none; z-index: 0;
+  animation: cc-bg-drift 9s linear infinite;
+}
+.cc-avatar-scan {
+  position: absolute; left: 0; right: 0; top: 0; height: 55%;
+  background: linear-gradient(to bottom, rgba(110,232,95,0.22), transparent);
+  pointer-events: none;
+  animation: cc-avatar-sweep 3.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-bg-sweep, .cc-avatar-scan { display: none; animation: none; }
+  .group:hover .cc-sweep { animation: none; }
+}
