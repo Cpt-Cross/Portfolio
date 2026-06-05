@@ -60,7 +60,7 @@ function RoutingOverlay({ target }: { target: { name: string; sub: string } }) {
   return (
     <motion.div
       key="routing"
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ scaleY: [1, 0.006, 0.006], scaleX: [1, 1, 0.0015], opacity: [1, 1, 0] }}
       transition={{ duration: 0.45 }}
@@ -244,14 +244,25 @@ export function Console() {
   useEffect(() => {
     if (!routing) return;
     let hidden = false;
+    let holdTimer = 0;
     const onVis = () => {
-      if (document.visibilityState === "hidden") hidden = true;
-      else if (hidden) setRouting(null);
+      if (document.visibilityState === "hidden") {
+        hidden = true;
+      } else if (hidden && !holdTimer) {
+        // operator is back; hold the overlay briefly so it registers, then power off
+        holdTimer = window.setTimeout(() => setRouting(null), 520);
+      }
     };
     document.addEventListener("visibilitychange", onVis);
+    // never-backgrounded fallback (popup blocked / same-tab): clear after a beat
     const bg = window.setTimeout(() => { if (!hidden) setRouting(null); }, 1400);
     const safety = window.setTimeout(() => setRouting(null), 60000);
-    return () => { document.removeEventListener("visibilitychange", onVis); window.clearTimeout(bg); window.clearTimeout(safety); };
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      window.clearTimeout(bg);
+      window.clearTimeout(safety);
+      if (holdTimer) window.clearTimeout(holdTimer);
+    };
   }, [routing]);
 
   const endBoot = () => { localStorage.setItem("cc_boot_ts", String(Date.now())); setBooting(false); };

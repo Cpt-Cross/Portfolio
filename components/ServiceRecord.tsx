@@ -1,17 +1,8 @@
 "use client";
 
-import { serviceRecord } from "@/lib/data";
+import { serviceRecord, serviceSnapshot } from "@/lib/data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "./SectionLabel";
-
-const current = serviceRecord.find((s) => s.active);
-
-const summary = [
-  { k: "ACTIVE SINCE", v: "2019" },
-  { k: "POSTINGS LOGGED", v: String(serviceRecord.length).padStart(2, "0") },
-  { k: "CURRENT", v: current ? current.unit : "—" },
-  { k: "THEATRES", v: "Remote · Bengaluru · New Delhi" },
-];
 
 export function ServiceRecord() {
   return (
@@ -68,22 +59,60 @@ export function ServiceRecord() {
           ))}
         </div>
 
-        {/* Summary rail - fills the right, stacks under on mobile */}
-        <aside className="mt-8 lg:mt-0 lg:sticky lg:top-16">
+        {/* Summary rail - desktop only (space-filler on mobile) */}
+        <aside className="hidden lg:block lg:mt-0 lg:sticky lg:top-16">
           <Reveal>
             <div className="hud-panel bg-panel-2/40 p-5">
-              <div className="t-label text-tac mb-4">// SERVICE SUMMARY</div>
-              <dl className="space-y-3.5">
-                {summary.map((row) => (
-                  <div key={row.k} className="flex flex-col gap-0.5 border-b border-line pb-3 last:border-0 last:pb-0">
-                    <dt className="t-label !text-dim">{row.k}</dt>
-                    <dd className="font-mono text-sm text-fg/90 leading-snug">{row.v}</dd>
-                  </div>
-                ))}
-              </dl>
-              <div className="mt-4 pt-4 border-t border-line flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-tac blink shrink-0" />
-                <span className="font-mono text-[11px] text-fg/80 leading-relaxed">Open to full-time, remote-first roles.</span>
+              <div className="t-label text-tac mb-4">// OPERATOR SNAPSHOT</div>
+
+              {/* Availability */}
+              <div className="flex items-start gap-2.5 pb-4 mb-4 border-b border-line">
+                <span className="w-1.5 h-1.5 rounded-full bg-tac blink shrink-0 mt-1.5" />
+                <div>
+                  <div className="t-label !text-dim mb-1">AVAILABILITY</div>
+                  <div className="font-mono text-sm text-fg/90 leading-snug">Open to work</div>
+                  <div className="font-mono text-[11px] text-muted leading-snug mt-0.5">{serviceSnapshot.availability}</div>
+                </div>
+              </div>
+
+              {/* Experience + Based */}
+              <div className="grid grid-cols-2 gap-3 pb-4 mb-4 border-b border-line">
+                <div>
+                  <div className="t-label !text-dim mb-1.5">EXPERIENCE</div>
+                  <div className="font-head font-700 text-2xl text-tac leading-none">{serviceSnapshot.experience}</div>
+                  <div className="font-mono text-[11px] text-muted mt-1.5 leading-snug">{serviceSnapshot.experienceNote}</div>
+                </div>
+                <div>
+                  <div className="t-label !text-dim mb-1.5">BASED</div>
+                  <div className="font-mono text-sm text-fg/90 leading-snug">{serviceSnapshot.based}</div>
+                  <div className="font-mono text-[11px] text-muted mt-1.5 leading-snug">{serviceSnapshot.coverage}</div>
+                </div>
+              </div>
+
+              {/* Key clients */}
+              <div className="pb-4 mb-4 border-b border-line">
+                <div className="t-label !text-dim mb-2">KEY CLIENTS</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {serviceSnapshot.clients.map((c) => (
+                    <span key={c} className="font-mono text-[10px] text-fg/80 border border-line-bright px-1.5 py-0.5">{c}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Specialties */}
+              <div className="pb-4 mb-4 border-b border-line">
+                <div className="t-label !text-dim mb-2">SPECIALTIES</div>
+                <ul className="space-y-1">
+                  {serviceSnapshot.specialties.map((s) => (
+                    <li key={s} className="obj-item font-mono text-[11px] text-fg/75 leading-relaxed">{s}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Languages */}
+              <div>
+                <div className="t-label !text-dim mb-1.5">LANGUAGES</div>
+                <div className="font-mono text-[11px] text-fg/80 leading-relaxed">{serviceSnapshot.languages}</div>
               </div>
             </div>
           </Reveal>

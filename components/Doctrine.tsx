@@ -91,11 +91,13 @@ export function Doctrine() {
       <Reveal delay={0.1}>
         <div className="mt-10 md:mt-12 pt-8 md:pt-10 border-t border-line text-center">
           <div className="t-label text-tac mb-4">// COMMENDATION</div>
-          <div className="font-head font-700 text-2xl md:text-4xl lg:text-5xl text-fg uppercase">
-            {commendation.name}
-            <span className="text-muted"> · {commendation.detail} </span>
-            <span className="text-tac">[{commendation.year}]</span>
+          <div className="font-head font-700 text-2xl md:text-4xl lg:text-5xl uppercase leading-tight">
+            <span className="text-fg">{commendation.namePrimary} </span>
+            <span className="text-tac">{commendation.nameAccent}</span>
           </div>
+          <p className="mt-3 font-mono text-[11px] md:text-xs text-muted tracking-wide leading-relaxed">
+            {commendation.sub}
+          </p>
         </div>
       </Reveal>
     </section>

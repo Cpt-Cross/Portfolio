@@ -47,7 +47,7 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 
 function ogHtml(key, dest) {
   const o = OG[key];
-  const img = `${SITE}/og/${o.img}.png`, t = esc(o.t), d = esc(o.d), u = `${SITE}/${key}`;
+  const img = `${SITE}/og/${o.img}.png?v=14`, t = esc(o.t), d = esc(o.d), u = `${SITE}/${key}`;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${t}</title>

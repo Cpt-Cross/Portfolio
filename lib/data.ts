@@ -258,7 +258,7 @@ export const combatRecord = {
   entries: [
     { category: 'FPS / Shooter', games: 'Call of Duty: Warzone · CS2 · Valorant · Overwatch', hours: '4,100+', tier: 'SEMI-PRO' },
     { category: 'MOBA / RTS', games: 'Dota 2 · StarCraft II', hours: '1,600+', tier: 'COMPETITIVE' },
-    { category: 'RPG', games: 'Destiny 2 · Genshin Impact · Cyberpunk 2077 · Honkai: Star Rail', hours: '2,700+', tier: 'COMPLETIONIST' },
+    { category: 'RPG', games: 'Destiny 2 · Genshin Impact · Cyberpunk 2077 · Honkai: Star Rail', hours: '2,700+', tier: 'LORE LORD' },
     { category: 'Fighting', games: 'Tekken series · Mortal Kombat series', hours: '800+', tier: 'GUILTY PLEASURE' },
   ],
 };
@@ -285,4 +285,20 @@ export const affiliations = [
   'Dell', 'ViewSonic', 'AOC', 'Ampverse', 'Govt. of India', 'BlueStacks',
 ];
 
-export const commendation = { name: 'AORUS CRUSADER', detail: 'COMMUNITY PILLAR · 1 OF 10 IN INDIA', year: '2019' };
+export const commendation = {
+  namePrimary: 'Aorus Voice of Gaming',
+  nameAccent: 'Crusader',
+  sub: 'Awarded in 2019 · Community Leadership Recognition · Only 1 of 10 in India',
+};
+
+// Recruiter snapshot rail (Service Record right aside).
+export const serviceSnapshot = {
+  availability: 'Full-time · Remote-first · Open to relocation',
+  experience: '7+ yrs',
+  experienceNote: 'Gaming & creator economy',
+  based: 'Delhi, India',
+  coverage: 'NA / EU / SEA / JP hours',
+  clients: ['Samsung', 'AMD', 'Riot Games', 'Lenovo', 'Intel'],
+  specialties: ['Influencer & creator marketing', 'Community building', 'Brand partnerships', 'Live activations'],
+  languages: 'English (professional) · Hindi (native) · Japanese (beginner)',
+};

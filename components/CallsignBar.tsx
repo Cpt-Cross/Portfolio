@@ -25,31 +25,13 @@ export function CallsignBar() {
                 {i === 2 && (
                   <span className="w-1.5 h-1.5 rounded-full bg-tac blink shrink-0" />
                 )}
-                <span className={`font-mono text-[11px] md:text-xs tracking-wide whitespace-nowrap transition-colors cursor-help ${i === 1 ? "text-fg" : i === 2 ? "text-tac" : "text-muted"} group-hover:text-fg`}>
+                <span className={`font-mono text-[11px] md:text-xs tracking-wide whitespace-nowrap transition-colors cursor-pointer ${active === i ? "text-fg" : i === 1 ? "text-fg" : i === 2 ? "text-tac" : "text-muted"} group-hover:text-fg`}>
                   {seg.label}
                 </span>
               </button>
               {i < callsignSegments.length - 1 && (
                 <span className="absolute -right-1.5 md:-right-2.5 top-1/2 -translate-y-1/2 text-dim text-[10px]">·</span>
               )}
-
-              {/* Intel popout */}
-              <AnimatePresence>
-                {active === i && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.18 }}
-                    className="absolute left-0 top-full mt-2 w-56 md:w-64 z-50"
-                  >
-                    <div className="hud-panel bg-panel-2 p-3">
-                      <div className="t-label text-tac mb-1.5">// INTEL</div>
-                      <p className="font-mono text-[11px] text-fg/85 leading-relaxed">{seg.intel}</p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
           ))}
         </div>
@@ -63,6 +45,27 @@ export function CallsignBar() {
           <span className="w-1.5 h-1.5 rounded-full bg-tac blink" />
         </div>
       </div>
+
+      {/* Intel expand strip - full width, BELOW the bar and OUTSIDE the scroller so it never clips */}
+      <AnimatePresence>
+        {active !== null && (
+          <motion.div
+            key="intel"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden border-t border-line/60 bg-panel-2/70 backdrop-blur-md"
+          >
+            <div className="px-3 md:px-6 py-2.5 flex items-start gap-2.5">
+              <span className="t-label text-tac shrink-0 mt-0.5">// INTEL</span>
+              <p className="font-mono text-[11px] md:text-xs text-fg/85 leading-relaxed">
+                {callsignSegments[active].intel}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

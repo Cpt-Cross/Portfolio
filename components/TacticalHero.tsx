@@ -31,7 +31,7 @@ export function TacticalHero() {
         </span>
       </motion.div>
 
-      <div className="relative px-3 md:px-6 pt-7 md:pt-10 pb-0 flex flex-col min-h-[calc(100svh-2.75rem)]">
+      <div className="relative px-3 md:px-6 pt-7 md:pt-10 pb-0 flex flex-col md:min-h-[calc(100svh-2.75rem)]">
         {/* Top annotation row */}
         <div className="flex items-start justify-between gap-6">
           <span className="t-label text-tac">// FIELD OPERATOR</span>
@@ -46,7 +46,7 @@ export function TacticalHero() {
 
         {/* Main hero block */}
         <motion.div style={{ y: contentY }} className="py-7 md:py-9">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-6 items-center">
+          <div className="hidden lg:grid lg:grid-cols-12 gap-7 lg:gap-6 items-center">
             {/* Left - identity */}
             <div className="lg:col-span-8">
               <div className="t-label text-muted mb-3 md:mb-4">{profile.taskforce} · DESIGNATION</div>
@@ -134,6 +134,58 @@ export function TacticalHero() {
                   </div>
                 )}
               </motion.div>
+            </div>
+          </div>
+
+          {/* MOBILE hero - compact: smaller image beside the name, no endless scroll */}
+          <div className="lg:hidden">
+            <div className="t-label text-muted mb-3">{profile.taskforce} · DESIGNATION</div>
+            <div className="flex items-start gap-4">
+              <h1 className="min-w-0 flex-1 font-head font-700 text-5xl sm:text-6xl leading-[0.85] tracking-tightest text-fg uppercase">
+                {profile.name}
+              </h1>
+              <div className="hud-panel relative shrink-0 w-[88px] sm:w-28 aspect-[3/4] overflow-hidden">
+                {!photoError ? (
+                  <>
+                    <Image
+                      src={profile.photo}
+                      alt={profile.name}
+                      fill
+                      sizes="120px"
+                      className="object-cover grayscale contrast-110 opacity-80"
+                      onError={() => setPhotoError(true)}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between">
+                      <span className="t-label !text-fg/70 !text-[8px]">EST.2019</span>
+                      <span className="w-1 h-1 rounded-full bg-tac blink" />
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 grid place-items-center">
+                    <span className="font-head font-700 text-3xl text-tac">CC</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="mt-3 font-head font-600 text-2xl text-tac tracking-tight">// {profile.callsign}</div>
+            <p className="mt-3 font-mono text-sm text-muted">[ {profile.role.split(", ").join(" · ")} ]</p>
+            <p className="mt-1 font-mono text-xs text-dim uppercase tracking-wide">{profile.field}</p>
+
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <a href="#deployment" className="group inline-flex items-center gap-2 bg-tac text-void px-4 py-2.5 font-mono text-xs uppercase tracking-wide font-700">
+                Deployment log
+                <ArrowDownRight className="w-4 h-4" />
+              </a>
+              <a href="#comms" className="inline-flex items-center gap-2 border border-line-bright px-4 py-2.5 font-mono text-xs uppercase tracking-wide text-fg">
+                <Radio className="w-4 h-4" /> Contact
+              </a>
+              <a href="#service" className="inline-flex items-center gap-2 border border-line-bright px-4 py-2.5 font-mono text-xs uppercase tracking-wide text-fg">
+                <ClipboardList className="w-4 h-4" /> Service record
+              </a>
+              <a href="/Aditya_Kumar_Resume_2026Q2.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase tracking-wide text-muted">
+                <FileText className="w-4 h-4" /> Dossier [PDF]
+              </a>
             </div>
           </div>
         </motion.div>
