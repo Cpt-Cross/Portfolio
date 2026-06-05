@@ -19,17 +19,17 @@ export const profile = {
   },
   brief: [
     'Creator-economy operator with seven years across gaming, esports, and live activations.',
-    'Runs equally as player, cosplayer, agency-side campaign manager, and community lead. A rare combination on the brand side of the table.',
+    'Runs equally as gamer, cosplayer, agency-side campaign manager, and community lead. A rare combination on the brand side of the table.',
   ],
   doctrine:
     'Brief reviews catch ~30-40% of common creator-experience friction points before they reach talent, because I was the talent.',
-  roles: ['Player', 'Cosplayer', 'Creator', 'Community Lead'],
+  roles: ['Gamer', 'Cosplayer', 'Creator', 'Community Lead'],
 };
 
 // Callsign bar segments with hover intel
 export const callsignSegments = [
-  { label: 'TF-141', intel: 'Task-force designation: solo operator, full-stack creator & partnerships.' },
-  { label: 'CAPTAIN CROSS', intel: 'The gaming-world callsign. Real name: Aditya Kumar.' },
+  { label: 'TF-141', intel: 'Active in gaming communities since 2016. Solo operator running full-stack creator, cosplay and partnerships work.' },
+  { label: 'CAPTAIN CROSS', intel: 'The callsign across every channel. Also known as Aditya Kumar, off-stage.' },
   { label: 'STATUS: ACTIVE', intel: 'Open to work: full-time, remote-first. Cleared for deployment.' },
   { label: '28.61°N 77.21°E', intel: 'Delhi, India. Operating remote-first across NA / EU / SEA / JP.' },
 ];
@@ -73,7 +73,7 @@ export const deployments = [
     status: 'ONGOING',
     image: '/images/work/samsung.jpg',
     objectives: [
-      'Selected exclusively (no competitive pitch) as cosplay and creator partner across Samsung\u2019s flagship launches.',
+      'Selected exclusively (no competitive pitch) as cosplay and artist partner across Samsung\u2019s flagship launches.',
       'Four creators per event, fully remote execution: talent coordination, deliverables, brief-to-publish.',
       'Continuously retained across multiple flagship launches, no re-bidding.',
     ],
@@ -87,7 +87,7 @@ export const deployments = [
     status: 'COMPLETE',
     image: '/images/work/riot-convergence.jpg',
     objectives: [
-      'Led influencer and cosplay operations for one of India\u2019s highest-prestige Riot brand activations.',
+      'Led influencer and cosplay operations for one of India\u2019s first-ever official Riot LAN events and activations.',
       'Talent sourcing, deliverables management, on-ground execution across Convergence properties.',
       'Bridged Riot\u2019s global brand standards with Indian creator/cosplay execution.',
     ],
@@ -123,9 +123,27 @@ export const deployments = [
   },
 ];
 
-// Abridged extra ops, compact list, no imagery needed.
+// Abridged extra ops, compact list, no imagery needed. Sorted newest to oldest.
 // >> Add more one-liners here any time; they render automatically.
 export const additionalOps = [
+  {
+    op: 'FFMAX-JJK',
+    brand: 'Free Fire MAX × Jujutsu Kaisen',
+    clearance: 'GARENA · 2026',
+    note: 'Multi-city anime-IP crossover across 10 colleges (Delhi + Mumbai): cosplay talent and creator deliverables end-to-end.',
+  },
+  {
+    op: 'WAVES-SUMMIT',
+    brand: 'WAVES Summit 2025',
+    clearance: 'GOVT. OF INDIA · 2025',
+    note: 'Talent partnerships and creator operations for a national government media summit (via Epiko).',
+  },
+  {
+    op: 'WOWS-CAMPAIGN',
+    brand: 'World of Warships',
+    clearance: 'INDEPENDENT · 2025',
+    note: 'Four-creator influencer campaign promoting World of Warships.',
+  },
   {
     op: 'AMAZON-BBD',
     brand: 'Amazon Big Billion Days 2024',
@@ -143,24 +161,6 @@ export const additionalOps = [
     brand: 'ViewSonic Monitor Launch',
     clearance: 'VIA MAVERIK · 2024',
     note: 'Planned and executed a long-term influencer program around ViewSonic\u2019s monitor launches.',
-  },
-  {
-    op: 'WOWS-CAMPAIGN',
-    brand: 'World of Warships',
-    clearance: 'INDEPENDENT · 2025',
-    note: 'Four-creator influencer campaign promoting World of Warships.',
-  },
-  {
-    op: 'FFMAX-JJK',
-    brand: 'Free Fire MAX × Jujutsu Kaisen',
-    clearance: 'GARENA · 2026',
-    note: 'Multi-city anime-IP crossover across 10 colleges (Delhi + Mumbai): cosplay talent and creator deliverables end-to-end.',
-  },
-  {
-    op: 'WAVES-SUMMIT',
-    brand: 'WAVES Summit 2025',
-    clearance: 'GOVT. OF INDIA',
-    note: 'Talent partnerships and creator operations for a national government media summit (via Epiko).',
   },
 ];
 
@@ -251,22 +251,22 @@ export const serviceRecord: ServiceEntry[] = [
   },
 ];
 
-// Combat record = personal gaming creds
+// Combat record = personal gaming creds. hours render in signature green.
 export const combatRecord = {
   title: 'COMBAT RECORD',
   subtitle: 'PERSONAL · PROOF THE OPERATOR LIVES IN-THEATRE.',
   entries: [
-    { game: 'Call of Duty: Warzone', detail: 'Semi-pro · Nvidia India tournaments', tier: 'COMPETITIVE' },
-    { game: 'CS2 / Valorant', detail: 'Long-time competitive', tier: 'COMPETITIVE' },
-    { game: 'DOTA 2', detail: 'Long-time competitive', tier: 'COMPETITIVE' },
-    { game: 'Arma 3 · Bodycam', detail: 'Tactical-sim regular', tier: 'MIL-SIM' },
+    { category: 'FPS / Shooter', games: 'Call of Duty: Warzone · CS2 · Valorant · Overwatch', hours: '4,100+', tier: 'SEMI-PRO' },
+    { category: 'MOBA / RTS', games: 'Dota 2 · StarCraft II', hours: '1,600+', tier: 'COMPETITIVE' },
+    { category: 'RPG', games: 'Destiny 2 · Genshin Impact · Cyberpunk 2077 · Honkai: Star Rail', hours: '2,700+', tier: 'COMPLETIONIST' },
+    { category: 'Fighting', games: 'Tekken series · Mortal Kombat series', hours: '800+', tier: 'GUILTY PLEASURE' },
   ],
 };
 
 // Doctrine roles, now with icon + one-line descriptor for each.
 export const roleDetails = [
-  { role: 'Player', icon: 'Gamepad2', detail: 'Semi-pro. Competitive FPS across Warzone, CS2, Valorant & DOTA.' },
-  { role: 'Cosplayer', icon: 'Drama', detail: 'Active cosplayer with industry ties, talent-side and on-stage.' },
+  { role: 'Gamer', icon: 'Gamepad2', detail: 'Semi-pro. Competitive FPS across Warzone, CS2, Valorant and Overwatch.' },
+  { role: 'Cosplayer', icon: 'Drama', detail: 'Active cosplayer with industry ties, talent-side and on-stage. Talent pool across PAN-India, North-East India, MENA and SEA.' },
   { role: 'Creator', icon: 'Video', detail: 'Twitch Affiliate · streamer & content creator as Captain Cross.' },
   { role: 'Community Lead', icon: 'Users', detail: 'Scaled and moderated gaming communities past 200K members.' },
 ];
@@ -276,7 +276,7 @@ export const liveActivations = {
   label: 'Live Activations & Event Ops',
   icon: 'Radar',
   detail:
-    'The professional throughline tying the four together: end-to-end, creator-led activations at 8K-45K+ footfall, owned from brief to on-ground delivery.',
+    'The professional throughline that ties all four together: gamer, cosplayer, creator and community lead converging into end-to-end, creator-led activations at 8K-45K+ footfall, owned brief to on-ground delivery.',
 };
 
 // Affiliations = brands
@@ -285,4 +285,4 @@ export const affiliations = [
   'Dell', 'ViewSonic', 'AOC', 'Ampverse', 'Govt. of India', 'BlueStacks',
 ];
 
-export const commendation = { name: 'AORUS VOICE OF GAMING', detail: 'NATIONAL CHAMPION', year: '2019' };
+export const commendation = { name: 'AORUS CRUSADER', detail: 'COMMUNITY PILLAR · 1 OF 10 IN INDIA', year: '2019' };

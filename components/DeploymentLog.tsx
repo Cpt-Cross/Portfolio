@@ -7,6 +7,19 @@ import { deployments, additionalOps } from "@/lib/data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "./SectionLabel";
 
+// highlight numeric/metric tokens in signature green (skips 4-digit years)
+function hl(text: string) {
+  return text.split(/(\d[\d,]*(?:\.\d+)?(?:K|M|B)?\+?%?)/g).map((part, i) =>
+    /^\d/.test(part) && !/^(?:19|20)\d{2}$/.test(part) ? (
+      <span key={i} className="text-tac">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+}
+
 const featured = deployments[0];
 const rest = deployments.slice(1);
 
@@ -73,7 +86,7 @@ export function DeploymentLog() {
             <ul className="space-y-2 flex-1">
               {featured.objectives.slice(0, 4).map((o, idx) => (
                 <li key={idx} className="obj-item font-mono text-xs md:text-sm text-fg/80 leading-relaxed">
-                  {o}
+                  {hl(o)}
                 </li>
               ))}
             </ul>
@@ -123,7 +136,7 @@ export function DeploymentLog() {
               <ul className="space-y-1.5 flex-1">
                 {d.objectives.slice(0, 2).map((o, idx) => (
                   <li key={idx} className="obj-item font-mono text-[11px] md:text-xs text-fg/80 leading-relaxed">
-                    {o}
+                    {hl(o)}
                   </li>
                 ))}
               </ul>
@@ -157,7 +170,7 @@ export function DeploymentLog() {
                   </span>
                 </div>
                 <p className="col-span-12 md:col-span-7 font-mono text-[11px] md:text-xs text-fg/75 leading-relaxed">
-                  {a.note}
+                  {hl(a.note)}
                 </p>
                 <div className="col-span-12 md:col-span-2 md:text-right">
                   <span className="t-label !text-muted">{a.clearance}</span>

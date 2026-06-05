@@ -67,11 +67,11 @@ export function Doctrine() {
         <div className="hud-panel bg-panel-2/40 p-6 md:p-10 max-w-4xl mx-auto text-center">
           <div className="t-label text-tac mb-4">// FIELD DOCTRINE</div>
           <blockquote className="font-head font-600 text-xl md:text-3xl lg:text-4xl text-fg leading-tight">
-            The rare seat on the brand side that has been{" "}
-            <span className="text-tac">the player</span>,{" "}
-            <span className="text-tac">the cosplayer</span>,{" "}
-            <span className="text-tac">the creator</span>, and{" "}
-            <span className="text-tac">the community lead</span>.
+            The rare seat on the brand side that has been the{" "}
+            <span className="text-tac">gamer</span>, the{" "}
+            <span className="text-tac">cosplayer</span>, the{" "}
+            <span className="text-tac">creator</span>, and the{" "}
+            <span className="text-tac">community lead</span>.
           </blockquote>
           <p className="mt-6 font-mono text-xs md:text-sm text-muted leading-relaxed max-w-2xl mx-auto">
             {profile.doctrine}
