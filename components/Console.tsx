@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Tv, Play, Zap, Film, Camera, Users, Briefcase, Palette, FileText,
@@ -9,12 +10,11 @@ import {
 import { LiveClock } from "./LiveClock";
 import { ScrambleText } from "./ScrambleText";
 
-const broadcast = [
-  { key: "twitch", name: "TWITCH", tag: "LIVE OPS", href: "/twitch", sub: "twitch.tv/captaincrosstv", Icon: Tv,
-    thumb: "https://static-cdn.jtvnw.net/previews-ttv/live_user_captaincrosstv-440x248.jpg" },
-  { key: "yt", name: "YOUTUBE", tag: "MAIN CHANNEL", href: "/yt", sub: "youtube.com/@CaptainCross", Icon: Play,
-    thumb: "/api/yt-thumb/main" },
-] as const;
+type Nav = (e: ReactMouseEvent, p: { name: string; sub: string; href: string }) => void;
+type TwitchData = { configured?: boolean; live?: boolean; title?: string; viewers?: number; game?: string; thumb?: string; error?: boolean };
+
+const STATIC_TWITCH = "https://static-cdn.jtvnw.net/previews-ttv/live_user_captaincrosstv-440x248.jpg";
+const IG_POST = "https://www.instagram.com/p/CsEV2ihvIZK/";
 
 const channels = [
   { name: "KICK", tag: "LIVE OPS // ALT", href: "/kick", sub: "kick.com/captaincrosstv", Icon: Zap },
@@ -25,6 +25,8 @@ const channels = [
   { name: "BEHANCE", tag: "DESIGN PORTFOLIO", href: "/behance", sub: "behance.net/captaincross", Icon: Palette },
   { name: "DOSSIER", tag: "RESUME // PDF", href: "/cv", sub: "download CV", Icon: FileText },
 ] as const;
+
+const fmt = (n: number) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + "K" : String(n));
 
 function BootSequence({ onDone }: { onDone: () => void }) {
   const steps = ["ESTABLISHING UPLINK", "AUTHENTICATING OPERATOR", "DECRYPTING CHANNELS"];
@@ -38,10 +40,8 @@ function BootSequence({ onDone }: { onDone: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <motion.div
-      initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}
-      className="grid-bg fixed inset-0 z-[60] flex flex-col items-center justify-center bg-void px-6"
-    >
+    <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}
+      className="grid-bg fixed inset-0 z-[60] flex flex-col items-center justify-center bg-void px-6">
       <div className="w-full max-w-sm">
         <div className="t-label mb-4 text-tac">// CAPTAIN CROSS · COMMS UPLINK</div>
         <div className="space-y-1.5 font-mono text-[12px]">
@@ -55,11 +55,26 @@ function BootSequence({ onDone }: { onDone: () => void }) {
         <div className="mt-4 h-px w-full bg-line">
           <motion.div className="h-px bg-tac" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 0.95, ease: "easeInOut" }} />
         </div>
-        <div className="mt-4 h-5 font-head text-sm tracking-wide2 text-tac">
-          {granted && <span className="blink">ACCESS GRANTED</span>}
-        </div>
+        <div className="mt-4 h-5 font-head text-sm tracking-wide2 text-tac">{granted && <span className="blink">ACCESS GRANTED</span>}</div>
       </div>
       <button onClick={onDone} className="t-label absolute bottom-6 right-6 text-dim transition-colors hover:text-fg">SKIP ▸</button>
+    </motion.div>
+  );
+}
+
+function RoutingOverlay({ target }: { target: { name: string; sub: string } }) {
+  return (
+    <motion.div key="routing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+      className="grid-bg fixed inset-0 z-[55] flex flex-col items-center justify-center bg-void/95 px-6 backdrop-blur-sm">
+      <div className="w-full max-w-sm text-center">
+        <div className="t-label mb-3 flex items-center justify-center gap-2 text-tac"><span className="h-1.5 w-1.5 rounded-full bg-tac blink" />ROUTING</div>
+        <div className="font-head text-2xl leading-none tracking-tightest text-fg">{target.name}</div>
+        <div className="mt-1.5 font-mono text-[11px] text-muted">{target.sub}</div>
+        <div className="mx-auto mt-5 h-px w-full max-w-[260px] bg-line">
+          <motion.div className="h-px bg-tac" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 0.8, ease: "easeInOut" }} />
+        </div>
+        <div className="t-label mt-3 text-dim">ESTABLISHING SECURE CHANNEL</div>
+      </div>
     </motion.div>
   );
 }
@@ -105,29 +120,70 @@ function SignalBars() {
   );
 }
 
-function BroadcastCard({ item, i }: { item: (typeof broadcast)[number]; i: number }) {
+function TwitchCard({ go }: { go: Nav }) {
+  const [data, setData] = useState<TwitchData | null>(null);
   const [imgOk, setImgOk] = useState(true);
-  const { name, tag, href, sub, Icon, thumb } = item;
+  useEffect(() => {
+    let on = true;
+    fetch("/api/twitch").then((r) => r.json()).then((d: TwitchData) => { if (on) setData(d); }).catch(() => { /* ignore */ });
+    return () => { on = false; };
+  }, []);
+  const live = !!data?.live;
+  const loading = data === null;
+  const thumb = data?.thumb || STATIC_TWITCH;
+  const name = "TWITCH", sub = "twitch.tv/captaincrosstv", href = "/twitch";
   return (
-    <motion.a href={href} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="hud-panel group relative block overflow-hidden bg-panel">
+    <motion.a href={href} onClick={(e) => go(e, { name, sub, href })} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }} className="hud-panel group relative block overflow-hidden bg-panel">
       <span className="cc-sweep" />
       <div className="relative aspect-video overflow-hidden border-b border-line bg-panel-2">
         {imgOk ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={thumb} alt="" onError={() => setImgOk(false)} className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100" />
         ) : (
-          <div className="grid-bg flex h-full w-full items-center justify-center"><Icon className="h-9 w-9 text-tac-dim" strokeWidth={1.4} /></div>
+          <div className="grid-bg flex h-full w-full items-center justify-center"><Tv className="h-9 w-9 text-tac-dim" strokeWidth={1.4} /></div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-panel/85 via-transparent to-transparent" />
-        <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-tac blink" />
-          <span className="t-label !text-[10px] !text-fg/80">{tag}</span>
+        <div className="absolute left-2.5 top-2.5 flex items-center gap-2">
+          {live ? (
+            <span className="flex items-center gap-1.5 bg-[#e0392f] px-1.5 py-0.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /><span className="font-mono text-[10px] font-semibold tracking-wide2 text-white">LIVE</span></span>
+          ) : (
+            <span className="t-label !text-[10px] !text-fg/70">{loading ? "CONNECTING" : "OFFLINE"}</span>
+          )}
+          {live && data?.viewers != null && <span className="font-mono text-[10px] text-fg/80">{fmt(data.viewers)} watching</span>}
         </div>
       </div>
       <div className="flex items-center gap-3 p-3.5">
-        <div className="grid h-9 w-9 shrink-0 place-items-center border border-line text-tac transition-colors group-hover:border-tac/50"><Icon className="h-4 w-4" strokeWidth={1.6} /></div>
+        <div className="grid h-9 w-9 shrink-0 place-items-center border border-line text-tac transition-colors group-hover:border-tac/50"><Tv className="h-4 w-4" strokeWidth={1.6} /></div>
+        <div className="min-w-0 flex-1">
+          <div className="font-head text-sm tracking-wide text-fg">{name}</div>
+          <div className="truncate font-mono text-[11px] text-muted">{live && data?.title ? data.title : sub}</div>
+        </div>
+        <ArrowUpRight className="h-4 w-4 shrink-0 text-dim transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-tac" />
+      </div>
+    </motion.a>
+  );
+}
+
+function YouTubeCard({ go }: { go: Nav }) {
+  const [imgOk, setImgOk] = useState(true);
+  const name = "YOUTUBE", sub = "youtube.com/@CaptainCross", href = "/yt";
+  return (
+    <motion.a href={href} onClick={(e) => go(e, { name, sub, href })} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.23, ease: [0.16, 1, 0.3, 1] }} className="hud-panel group relative block overflow-hidden bg-panel">
+      <span className="cc-sweep" />
+      <div className="relative aspect-video overflow-hidden border-b border-line bg-panel-2">
+        {imgOk ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src="/api/yt-thumb/main" alt="" onError={() => setImgOk(false)} className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100" />
+        ) : (
+          <div className="grid-bg flex h-full w-full items-center justify-center"><Play className="h-9 w-9 text-tac-dim" strokeWidth={1.4} /></div>
+        )}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-panel/85 via-transparent to-transparent" />
+        <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-tac blink" /><span className="t-label !text-[10px] !text-fg/80">MAIN CHANNEL</span></div>
+      </div>
+      <div className="flex items-center gap-3 p-3.5">
+        <div className="grid h-9 w-9 shrink-0 place-items-center border border-line text-tac transition-colors group-hover:border-tac/50"><Play className="h-4 w-4" strokeWidth={1.6} /></div>
         <div className="min-w-0 flex-1">
           <div className="font-head text-sm tracking-wide text-fg">{name}</div>
           <div className="truncate font-mono text-[11px] text-muted">{sub}</div>
@@ -138,41 +194,75 @@ function BroadcastCard({ item, i }: { item: (typeof broadcast)[number]; i: numbe
   );
 }
 
-function ChannelRow({ item, i }: { item: (typeof channels)[number]; i: number }) {
+function ChannelRow({ item, i, go, liveCount }: { item: (typeof channels)[number]; i: number; go: Nav; liveCount?: number | null }) {
   const { name, tag, href, sub, Icon } = item;
+  const hasLive = liveCount !== null && liveCount !== undefined;
   return (
-    <motion.a href={href} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="hud-panel group relative flex items-center gap-3.5 overflow-hidden bg-panel p-3.5">
+    <motion.a href={href} onClick={(e) => go(e, { name, sub, href })} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 + i * 0.05, ease: [0.16, 1, 0.3, 1] }} className="hud-panel group relative flex items-center gap-3.5 overflow-hidden bg-panel p-3.5">
       <span className="cc-sweep" />
       <div className="grid h-10 w-10 shrink-0 place-items-center border border-line text-muted transition-colors group-hover:border-tac/50 group-hover:text-tac"><Icon className="h-4 w-4" strokeWidth={1.6} /></div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
-          <span className="font-head text-sm tracking-wide text-fg">{name}</span>
-          <span className="t-label !text-[9px] !text-tac-dim">{tag}</span>
+        <div className="flex items-baseline gap-2"><span className="font-head text-sm tracking-wide text-fg">{name}</span><span className="t-label !text-[9px] !text-tac-dim">{tag}</span></div>
+        <div className="truncate font-mono text-[11px] text-muted">
+          {hasLive ? (<span className="inline-flex items-center gap-1.5 text-tac"><span className="h-1.5 w-1.5 rounded-full bg-tac blink" />{liveCount} online</span>) : sub}
         </div>
-        <div className="truncate font-mono text-[11px] text-muted">{sub}</div>
       </div>
       <ArrowUpRight className="h-4 w-4 shrink-0 text-dim transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-tac" />
     </motion.a>
   );
 }
 
+function InstagramEmbed({ url }: { url: string }) {
+  useEffect(() => {
+    const w = window as unknown as { instgrm?: { Embeds?: { process: () => void } } };
+    const run = () => { try { w.instgrm?.Embeds?.process(); } catch { /* ignore */ } };
+    if (w.instgrm) { run(); return; }
+    const id = "ig-embed-js";
+    if (document.getElementById(id)) { run(); return; }
+    const s = document.createElement("script");
+    s.id = id; s.async = true; s.src = "https://www.instagram.com/embed.js"; s.onload = run;
+    document.body.appendChild(s);
+  }, [url]);
+  return (
+    <blockquote className="instagram-media" data-instgrm-permalink={url} data-instgrm-version="14" style={{ margin: 0, width: "100%", minWidth: 0 }}>
+      <a href={url} target="_blank" rel="noreferrer" className="t-link block p-4 text-center font-mono text-[11px] text-muted">View this post on Instagram →</a>
+    </blockquote>
+  );
+}
+
 export function Console() {
   const [avatarOk, setAvatarOk] = useState(true);
   const [booting, setBooting] = useState(false);
+  const [routing, setRouting] = useState<{ name: string; sub: string } | null>(null);
+  const [discordOnline, setDiscordOnline] = useState<number | null>(null);
+
   useEffect(() => {
-    const seen = sessionStorage.getItem("cc_booted");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!seen && !reduce) setBooting(true);
+    if (!reduce) {
+      const last = Number(localStorage.getItem("cc_boot_ts") || 0);
+      if (Date.now() - last > 30 * 60 * 1000) setBooting(true);
+    }
+    fetch("/api/discord").then((r) => r.json()).then((d: { ok?: boolean; online?: number }) => {
+      if (d?.ok && typeof d.online === "number") setDiscordOnline(d.online);
+    }).catch(() => { /* ignore */ });
   }, []);
-  const endBoot = () => { sessionStorage.setItem("cc_booted", "1"); setBooting(false); };
+
+  const endBoot = () => { localStorage.setItem("cc_boot_ts", String(Date.now())); setBooting(false); };
+
+  const go: Nav = (e, p) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    setRouting({ name: p.name, sub: p.sub });
+    window.setTimeout(() => { window.location.href = p.href; }, 850);
+  };
 
   return (
     <main className="grid-bg relative min-h-screen text-fg">
       <Reticle />
       <span className="cc-bg-sweep" />
       <AnimatePresence>{booting && <BootSequence key="boot" onDone={endBoot} />}</AnimatePresence>
+      <AnimatePresence>{routing && <RoutingOverlay key="routing" target={routing} />}</AnimatePresence>
 
       <div className="sticky top-0 z-40 border-b border-line bg-void/85 backdrop-blur-md">
         <div className="mx-auto flex h-11 max-w-3xl items-center justify-between px-4">
@@ -217,10 +307,21 @@ export function Console() {
         </motion.header>
 
         <div className="mb-3 flex items-center gap-2"><span className="t-label">BROADCAST</span><span className="h-px flex-1 bg-line" /></div>
-        <div className="mb-8 grid gap-3 sm:grid-cols-2">{broadcast.map((item, i) => <BroadcastCard key={item.key} item={item} i={i} />)}</div>
+        <div className="mb-8 grid gap-3 sm:grid-cols-2"><TwitchCard go={go} /><YouTubeCard go={go} /></div>
 
         <div className="mb-3 flex items-center gap-2"><span className="t-label">CHANNELS</span><span className="h-px flex-1 bg-line" /></div>
-        <div className="mb-10 grid gap-3 sm:grid-cols-2">{channels.map((item, i) => <ChannelRow key={item.href} item={item} i={i} />)}</div>
+        <div className="mb-9 grid gap-3 sm:grid-cols-2">
+          {channels.map((item, i) => <ChannelRow key={item.href} item={item} i={i} go={go} liveCount={item.href === "/discord" ? discordOnline : undefined} />)}
+        </div>
+
+        <div className="mb-3 flex items-center gap-2"><span className="t-label">FIELD MEDIA</span><span className="h-px flex-1 bg-line" /></div>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }} className="hud-panel mb-10 overflow-hidden bg-panel">
+          <div className="flex items-center justify-between border-b border-line px-3.5 py-2.5">
+            <div className="flex items-center gap-2"><Camera className="h-3.5 w-3.5 text-tac" strokeWidth={1.6} /><span className="t-label">INSTAGRAM // LATEST</span></div>
+            <a href="/ig" onClick={(e) => go(e, { name: "INSTAGRAM", sub: "@cpt.cross", href: "/ig" })} className="t-link font-mono text-[10px] text-muted transition-colors hover:text-fg">@cpt.cross →</a>
+          </div>
+          <div className="bg-void/40 p-3 sm:p-4"><div className="mx-auto max-w-[420px]"><InstagramEmbed url={IG_POST} /></div></div>
+        </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }} className="hud-panel flex flex-col items-center gap-4 bg-panel p-6 sm:flex-row sm:gap-6">
           <div className="shrink-0 border border-line bg-fg p-2.5">
