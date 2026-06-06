@@ -5,8 +5,12 @@ export const metadata: Metadata = {
   title: "Comms Uplink · Captain Cross",
   description:
     "Patch into Captain Cross. Twitch, YouTube, Kick, Discord, Instagram, LinkedIn, Behance, and the dossier in one place.",
+  openGraph: {
+    title: "Captain Cross · Connect",
+  },
+  twitter: {
+    title: "Captain Cross · Connect",
+  },
 };
 
-export default function ConnectPage() {
-  return <Console />;
-}
+export default Console;
