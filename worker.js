@@ -32,7 +32,7 @@ const A = {
   discord: { img: "discord", t: "Captain Cross // Discord", d: "Join the squad comms on Discord." },
   linkedin: { img: "linkedin", t: "Aditya Kumar // LinkedIn", d: "Service record and professional profile." },
   behance: { img: "behance", t: "Captain Cross // Behance", d: "Design portfolio on Behance." },
-  cv: { img: "dossier", t: "Aditya Kumar // Dossier", d: "Operator file. Resume PDF." },
+  cv: { img: "cv", t: "Aditya Kumar // Resume", d: "Operator file and resume PDF. captaincross.net" },
 };
 const OG = {
   twitch: A.twitch, kick: A.kick, yt: A.yt, youtube: A.yt, vods: A.vods, highlights: A.vods,
@@ -47,7 +47,7 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 
 function ogHtml(key, dest) {
   const o = OG[key];
-  const img = `${SITE}/og/${o.img}.png?v=14`, t = esc(o.t), d = esc(o.d), u = `${SITE}/${key}`;
+  const img = `${SITE}/og/${o.img}.png?v=15`, t = esc(o.t), d = esc(o.d), u = `${SITE}/${key}`;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${t}</title>

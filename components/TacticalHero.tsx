@@ -144,7 +144,7 @@ export function TacticalHero() {
               <h1 className="min-w-0 flex-1 font-head font-700 text-5xl sm:text-6xl leading-[0.85] tracking-tightest text-fg uppercase">
                 {profile.name}
               </h1>
-              <div className="hud-panel relative shrink-0 w-[88px] sm:w-28 aspect-[3/4] overflow-hidden">
+              <div className="hud-panel relative shrink-0 w-28 sm:w-32 aspect-[3/4] overflow-hidden">
                 {!photoError ? (
                   <>
                     <Image

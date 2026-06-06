@@ -35,7 +35,7 @@ export function Comms() {
   };
 
   return (
-    <section id="comms" className="px-3 md:px-6 py-10 md:py-12 grid-bg">
+    <section id="comms" className="px-3 md:px-6 py-5 md:py-6 grid-bg">
       <SectionLabel
         index="05"
         code="ESTABLISH-CONTACT"

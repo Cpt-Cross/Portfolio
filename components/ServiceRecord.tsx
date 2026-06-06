@@ -6,7 +6,7 @@ import { SectionLabel } from "./SectionLabel";
 
 export function ServiceRecord() {
   return (
-    <section id="service" className="px-3 md:px-6 py-10 md:py-12">
+    <section id="service" className="px-3 md:px-6 py-5 md:py-6">
       <SectionLabel
         index="02"
         code="SERVICE-RECORD"

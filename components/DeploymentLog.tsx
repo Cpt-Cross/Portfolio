@@ -42,7 +42,7 @@ export function DeploymentLog() {
   );
 
   return (
-    <section id="deployment" className="px-3 md:px-6 py-10 md:py-12">
+    <section id="deployment" className="px-3 md:px-6 py-5 md:py-6">
       <SectionLabel
         index="01"
         code="DEPLOYMENT-LOG"

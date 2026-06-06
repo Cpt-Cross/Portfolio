@@ -11,7 +11,7 @@ export function Doctrine() {
   const ThroughlineIcon = ICONS[liveActivations.icon as keyof typeof ICONS] ?? Radar;
 
   return (
-    <section className="px-3 md:px-6 py-10 md:py-12">
+    <section className="px-3 md:px-6 py-5 md:py-6">
       <SectionLabel
         index="03"
         code="OPERATIONAL-DOCTRINE"

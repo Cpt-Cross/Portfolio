@@ -72,7 +72,7 @@ function RoutingOverlay({ target }: { target: { name: string; sub: string } }) {
         <div className="font-head text-2xl leading-none tracking-tightest text-fg">{target.name}</div>
         <div className="mt-1.5 font-mono text-[11px] text-muted">{target.sub}</div>
         <div className="mx-auto mt-5 h-px w-full max-w-[260px] bg-line">
-          <motion.div className="h-px bg-tac" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 0.8, ease: "easeInOut" }} />
+          <motion.div className="h-px bg-tac" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 1.4, ease: "easeInOut" }} />
         </div>
         <div className="t-label mt-3 text-dim">OPENED IN A NEW TAB · STANDING BY</div>
       </div>
@@ -250,12 +250,12 @@ export function Console() {
         hidden = true;
       } else if (hidden && !holdTimer) {
         // operator is back; hold the overlay briefly so it registers, then power off
-        holdTimer = window.setTimeout(() => setRouting(null), 520);
+        holdTimer = window.setTimeout(() => setRouting(null), 1540);
       }
     };
     document.addEventListener("visibilitychange", onVis);
     // never-backgrounded fallback (popup blocked / same-tab): clear after a beat
-    const bg = window.setTimeout(() => { if (!hidden) setRouting(null); }, 1400);
+    const bg = window.setTimeout(() => { if (!hidden) setRouting(null); }, 1540);
     const safety = window.setTimeout(() => setRouting(null), 60000);
     return () => {
       document.removeEventListener("visibilitychange", onVis);
