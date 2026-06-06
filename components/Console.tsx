@@ -22,6 +22,9 @@ const channels = [
 
 const fmt = (n: number) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + "K" : String(n));
 
+const ROUTING_LAUNCH_MS = 1200; // overlay plays, THEN the channel opens
+const RETURN_HOLD_MS = 1000;    // overlay hold on return before CRT power-off (~35% shorter)
+
 function BootSequence({ onDone }: { onDone: () => void }) {
   const steps = ["ESTABLISHING UPLINK", "AUTHENTICATING OPERATOR", "DECRYPTING CHANNELS"];
   const [done, setDone] = useState(0);
@@ -72,7 +75,7 @@ function RoutingOverlay({ target }: { target: { name: string; sub: string } }) {
         <div className="font-head text-2xl leading-none tracking-tightest text-fg">{target.name}</div>
         <div className="mt-1.5 font-mono text-[11px] text-muted">{target.sub}</div>
         <div className="mx-auto mt-5 h-px w-full max-w-[260px] bg-line">
-          <motion.div className="h-px bg-tac" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 1.4, ease: "easeInOut" }} />
+          <motion.div className="h-px bg-tac" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 1.1, ease: "easeInOut" }} />
         </div>
         <div className="t-label mt-3 text-dim">OPENED IN A NEW TAB · STANDING BY</div>
       </div>
@@ -250,12 +253,12 @@ export function Console() {
         hidden = true;
       } else if (hidden && !holdTimer) {
         // operator is back; hold the overlay briefly so it registers, then power off
-        holdTimer = window.setTimeout(() => setRouting(null), 1540);
+        holdTimer = window.setTimeout(() => setRouting(null), RETURN_HOLD_MS);
       }
     };
     document.addEventListener("visibilitychange", onVis);
     // never-backgrounded fallback (popup blocked / same-tab): clear after a beat
-    const bg = window.setTimeout(() => { if (!hidden) setRouting(null); }, 1540);
+    const bg = window.setTimeout(() => { if (!hidden) setRouting(null); }, ROUTING_LAUNCH_MS + RETURN_HOLD_MS + 600);
     const safety = window.setTimeout(() => setRouting(null), 60000);
     return () => {
       document.removeEventListener("visibilitychange", onVis);
@@ -268,8 +271,19 @@ export function Console() {
   const endBoot = () => { localStorage.setItem("cc_boot_ts", String(Date.now())); setBooting(false); };
 
   const go: Nav = (e, p) => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // honor open-in-new-window intents
-    setRouting({ name: p.name, sub: p.sub }); // anchor target=_blank opens the channel; overlay holds here
+    // honor explicit open-in-new-window / middle-click intents
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+    e.preventDefault();
+    setRouting({ name: p.name, sub: p.sub });
+    // hold so the routing animation actually plays, THEN open the channel
+    window.setTimeout(() => {
+      const w = window.open(p.href, "_blank");
+      if (w) {
+        try { w.opener = null; } catch (_) {} // sever opener for safety, keep the new tab
+      } else {
+        window.location.href = p.href; // popup genuinely blocked -> same tab
+      }
+    }, ROUTING_LAUNCH_MS);
   };
 
   return (
