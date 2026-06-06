@@ -22,8 +22,8 @@ const channels = [
 
 const fmt = (n: number) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + "K" : String(n));
 
-const ROUTING_LAUNCH_MS = 1200; // overlay plays, THEN the channel opens
-const RETURN_HOLD_MS = 1000;    // overlay hold on return before CRT power-off (~35% shorter)
+const ROUTING_LAUNCH_MS = 1000; // overlay plays, THEN the channel opens
+const RETURN_HOLD_MS = 750;    // overlay hold on return before CRT power-off (~35% shorter)
 
 function BootSequence({ onDone }: { onDone: () => void }) {
   const steps = ["ESTABLISHING UPLINK", "AUTHENTICATING OPERATOR", "DECRYPTING CHANNELS"];
