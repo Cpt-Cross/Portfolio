@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 import { deployments, additionalOps } from "@/lib/data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "./SectionLabel";
@@ -178,6 +179,30 @@ export function DeploymentLog() {
               </li>
             ))}
           </ul>
+        </div>
+      </Reveal>
+
+      {/* Entry points to the full archive + gallery (open in a new tab) */}
+      <Reveal delay={0.15}>
+        <div className="mt-5 md:mt-6 flex flex-col sm:flex-row gap-3">
+          <a
+            href="/work"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center justify-center gap-2.5 bg-tac text-void px-5 py-3.5 font-mono text-xs md:text-sm uppercase tracking-wide font-700 hover:bg-fg transition-colors"
+          >
+            Open full campaign files
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </a>
+          <a
+            href="/gallery"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center justify-center gap-2.5 border border-line-bright px-5 py-3.5 font-mono text-xs md:text-sm uppercase tracking-wide text-fg hover:border-tac hover:text-tac transition-colors"
+          >
+            View photo gallery
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </a>
         </div>
       </Reveal>
     </section>

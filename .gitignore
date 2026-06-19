@@ -9,3 +9,6 @@ yarn-debug.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Raw campaign source photos (kept locally; processed outputs in public/images/work are committed)
+/work-images

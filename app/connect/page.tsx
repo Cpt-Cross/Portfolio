@@ -7,8 +7,12 @@ export const metadata: Metadata = {
     "Patch into Captain Cross. Twitch, YouTube, Kick, Discord, Instagram, LinkedIn, Behance, and the dossier in one place.",
   openGraph: {
     title: "Captain Cross · Connect",
+    type: "website",
+    siteName: "Captain Cross",
+    locale: "en_US",
   },
-  twitter: {
+    twitter: {
+    card: "summary_large_image",
     title: "Captain Cross · Connect",
   },
 };
