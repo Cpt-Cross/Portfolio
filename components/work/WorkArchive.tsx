@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { projects, abridgedOps, WORK_CATEGORIES } from "@/lib/projects";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { projects, abridgedOps, WORK_CATEGORIES, CURATED_ORDER } from "@/lib/projects";
 import { coverFor, getGallery } from "@/lib/work";
 import { CampaignCard } from "./CampaignCard";
+import { CampaignOverlay } from "./CampaignOverlay";
 
-type Sort = "brand" | "newest" | "oldest" | "footfall";
+type Sort = "curated" | "brand" | "newest" | "oldest" | "footfall";
 const SORTS: { id: Sort; label: string }[] = [
+  { id: "curated", label: "Curated" },
   { id: "newest", label: "Newest" },
   { id: "oldest", label: "Oldest" },
   { id: "brand", label: "Brand A-Z" },
@@ -16,59 +19,54 @@ const SORTS: { id: Sort; label: string }[] = [
 const slugSet = new Set(projects.map((p) => p.slug));
 
 export function WorkArchive() {
-  const [sort, setSort] = useState<Sort>("newest");
+  const [sort, setSort] = useState<Sort>("curated");
   const [category, setCategory] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
-  const pendingScroll = useRef<string | null>(null);
 
   const list = useMemo(() => {
     const arr = projects.filter((p) => !category || p.categories.includes(category));
     const out = [...arr];
-    if (sort === "brand") out.sort((a, b) => a.client.localeCompare(b.client) || a.title.localeCompare(b.title));
+    if (sort === "curated") {
+      const rank = (s: string) => {
+        const i = CURATED_ORDER.indexOf(s);
+        return i === -1 ? 1e9 : i;
+      };
+      out.sort((a, b) => rank(a.slug) - rank(b.slug) || b.date.localeCompare(a.date));
+    } else if (sort === "brand")
+      out.sort((a, b) => a.client.localeCompare(b.client) || a.title.localeCompare(b.title));
     else if (sort === "newest") out.sort((a, b) => b.date.localeCompare(a.date));
     else if (sort === "oldest") out.sort((a, b) => a.date.localeCompare(b.date));
     else if (sort === "footfall") out.sort((a, b) => (b.footfall || 0) - (a.footfall || 0));
     return out;
   }, [sort, category]);
 
-  const scrollTo = (slug: string) => {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        document.getElementById(slug)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 70);
-    });
+  // Reflect the open file in the URL (shareable + deep-linkable) without adding
+  // history entries. replaceState does not fire hashchange, so no loop.
+  const setHash = (slug: string | null) => {
+    const base = window.location.pathname + window.location.search;
+    window.history.replaceState(null, "", slug ? `${base}#${slug}` : base);
+  };
+  const openOverlay = (slug: string) => {
+    setOpen(slug);
+    setHash(slug);
+  };
+  const closeOverlay = () => {
+    setOpen(null);
+    setHash(null);
   };
 
-  const toggle = (slug: string) => {
-    setOpen((cur) => {
-      const next = cur === slug ? null : slug;
-      if (next) scrollTo(next);
-      return next;
-    });
-  };
-
-  // Deep link: /work#<slug> opens that campaign on load (and on hash change).
+  // Deep link: /work#<slug> opens that file on load (and on external hash nav).
   useEffect(() => {
     const fromHash = () => {
       const slug = decodeURIComponent(window.location.hash.replace("#", ""));
-      if (slugSet.has(slug)) {
-        setCategory(null); // make sure it is visible
-        setOpen(slug);
-        pendingScroll.current = slug;
-      }
+      setOpen(slugSet.has(slug) ? slug : null);
     };
     fromHash();
     window.addEventListener("hashchange", fromHash);
     return () => window.removeEventListener("hashchange", fromHash);
   }, []);
 
-  // Run a pending deep-link scroll once the card is in the DOM.
-  useEffect(() => {
-    if (pendingScroll.current && open === pendingScroll.current) {
-      scrollTo(pendingScroll.current);
-      pendingScroll.current = null;
-    }
-  }, [open]);
+  const openProject = open ? projects.find((p) => p.slug === open) ?? null : null;
 
   const pillBase =
     "shrink-0 px-2.5 py-1 border font-mono text-[10px] md:text-[11px] uppercase tracking-wide transition-colors";
@@ -104,20 +102,21 @@ export function WorkArchive() {
           {list.length} OF {projects.length} FILES{category ? ` // ${category.toUpperCase()}` : ""}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 grid-flow-row-dense">
+        {/* Static grid: cards never animate or reflow; clicking opens the overlay */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {list.map((p) => (
             <CampaignCard
               key={p.slug}
               project={p}
-              gallery={getGallery(p.slug)}
               cover={coverFor(p)}
-              expanded={open === p.slug}
-              onToggle={() => toggle(p.slug)}
+              active={open === p.slug}
+              onOpen={() => openOverlay(p.slug)}
             />
           ))}
         </div>
 
-        {/* Abridged ops, no imagery */}
+        {/* Additional ops strip, only shown when there are abridged ops */}
+        {abridgedOps.length > 0 && (
         <div className="hud-panel mt-3 md:mt-4">
           <div className="flex items-center justify-between px-4 h-9 border-b border-line bg-panel-2/50">
             <span className="t-label text-tac">// ADDITIONAL OPS · ABRIDGED</span>
@@ -145,7 +144,19 @@ export function WorkArchive() {
             ))}
           </ul>
         </div>
+        )}
       </div>
+
+      <AnimatePresence>
+        {openProject && (
+          <CampaignOverlay
+            key={openProject.slug}
+            project={openProject}
+            gallery={getGallery(openProject.slug)}
+            onClose={closeOverlay}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

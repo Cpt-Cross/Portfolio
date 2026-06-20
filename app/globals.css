@@ -163,7 +163,21 @@
   pointer-events: none;
   animation: cc-avatar-sweep 3.6s ease-in-out infinite;
 }
+/* one-shot sweep for the campaign carousel: plays once when a file opens */
+.cc-image-scan {
+  position: absolute; left: 0; right: 0; top: 0; height: 55%;
+  background: linear-gradient(to bottom, rgba(110,232,95,0.18), transparent);
+  pointer-events: none; z-index: 1;
+  animation: cc-avatar-sweep 1.3s ease-out 1 both;
+}
+/* one-shot sweep across the campaign overlay on open (/connect style) */
+.cc-panel-scan {
+  position: absolute; left: 0; right: 0; top: 0; height: 42%;
+  background: linear-gradient(to bottom, transparent, rgba(110, 232, 95, 0.1), transparent);
+  pointer-events: none; z-index: 3;
+  animation: cc-avatar-sweep 1.15s ease-out 1 both;
+}
 @media (prefers-reduced-motion: reduce) {
-  .cc-bg-sweep, .cc-avatar-scan { display: none; animation: none; }
+  .cc-bg-sweep, .cc-avatar-scan, .cc-image-scan, .cc-panel-scan { display: none; animation: none; }
   .group:hover .cc-sweep { animation: none; }
 }

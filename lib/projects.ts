@@ -151,7 +151,7 @@ export const projects: Project[] = [
     categories: ["Esports", "Cosplay", "Government"],
     summary: [
       "Owned the AMD GameOn cosplay competition end to end: concept, marketing, talent, and on-ground delivery.",
-      "Hosted and judged the finale on AMD India's official livestream from the GameOn stage.",
+      "Hosted and judged the finale on AMD India's official YouTube livestream from the GameOn stage.",
       "Coordinated 50+ cosplayers at IndiaJoy, a festival backed by the Government of Telangana.",
     ],
     stats: [
@@ -287,33 +287,127 @@ export const projects: Project[] = [
     ],
     tags: ["ESPORTS", "INFLUENCER-OPS", "GLOBAL-BRAND"],
   },
+
+  // ---- Promoted from abridged to full files (2026-06). Add images per the
+  //      handoff notes. CONFIRM the dates, and add real numbers to `stats`. ----
+  {
+    slug: "amazon-bbd",
+    op: "AMZN-BBD",
+    title: "Amazon Big Billion Days 2024",
+    client: "Amazon India",
+    clearance: "VIA MAVERIK",
+    role: "Influencer operations lead",
+    year: "2024",
+    date: "2024-10", // CONFIRM month (Big Billion Days usually runs in October)
+    status: "COMPLETE",
+    theatre: "Live commerce, Big Billion Days",
+    oneLine: "Ran 15+ influencers livestreaming on Amazon India through the Big Billion Days sale.",
+    footfall: 0,
+    categories: ["Launch"],
+    summary: [
+      "Selected and managed 15+ influencers livestreaming on Amazon India during the Big Billion Days sale.",
+      "Owned the operation end to end: sourcing, scheduling, briefs, and live-day coordination.",
+      "Kept creators on brief through a high-volume, time-boxed sale window.",
+    ],
+    stats: [
+      { label: "Influencers", value: "15+" },
+      // CONFIRM: add real numbers if you have them (hours live, views, units moved)
+    ],
+    tags: ["LIVE-COMMERCE", "INFLUENCER-OPS", "AMAZON"],
+  },
+  {
+    slug: "world-of-warships",
+    op: "WOWS-25",
+    title: "World of Warships",
+    client: "World of Warships",
+    clearance: "INDEPENDENT",
+    role: "Influencer campaign lead",
+    year: "2025",
+    date: "2025-06", // CONFIRM month
+    status: "COMPLETE",
+    theatre: "Creator campaign, India",
+    oneLine: "Built and ran a four-creator influencer campaign for World of Warships.",
+    footfall: 0,
+    categories: ["Esports"],
+    summary: [
+      "Built and ran a four-creator influencer campaign promoting World of Warships in India.",
+      "Owned creator selection, briefing, and content coordination end to end, independently.",
+    ],
+    stats: [
+      { label: "Creators", value: "4" },
+      // CONFIRM: add real numbers if you have them (views, reach)
+    ],
+    tags: ["GAMING", "INFLUENCER-OPS", "INDEPENDENT"],
+  },
+  {
+    slug: "intel-ambassador",
+    op: "INTEL-AMB",
+    title: "Intel Ambassador Program",
+    client: "Intel India",
+    clearance: "VIA MAVERIK",
+    role: "Influencer selection advisor",
+    year: "2024",
+    date: "2024-05", // CONFIRM month
+    status: "COMPLETE",
+    theatre: "Brand ambassador selection",
+    oneLine: "Advised Intel India on the year's influencer brand ambassadors.",
+    footfall: 0,
+    categories: ["Launch"],
+    summary: [
+      "Advised Intel India on selecting the year's influencer brand ambassadors.",
+      "Brought creator-fit and audience judgement to the shortlist.",
+    ],
+    stats: [
+      // CONFIRM: add a number if you have one (ambassadors selected, reach)
+    ],
+    tags: ["ADVISORY", "CREATOR-FIT", "INTEL"],
+  },
+  {
+    slug: "viewsonic-launch",
+    op: "VWSNC-LNCH",
+    title: "ViewSonic Monitor Launch",
+    client: "ViewSonic",
+    clearance: "VIA MAVERIK",
+    role: "Influencer program lead",
+    year: "2024",
+    date: "2024-04", // CONFIRM month
+    status: "COMPLETE",
+    theatre: "Long-term monitor launch program",
+    oneLine: "Planned and ran a long-term influencer program around ViewSonic's monitor launches.",
+    footfall: 0,
+    categories: ["Launch"],
+    summary: [
+      "Planned and ran a long-term influencer program around ViewSonic's monitor launches.",
+      "Kept a steady creator cadence across multiple launch beats.",
+    ],
+    stats: [
+      // CONFIRM: add a number if you have one (creators, launches covered)
+    ],
+    tags: ["PRODUCT-LAUNCH", "INFLUENCER-OPS", "VIEWSONIC"],
+  },
 ];
 
 // Ops with no gallery imagery, listed for completeness on the page.
+// All current ops are now full files above; add future minor ops here and the
+// "ADDITIONAL OPS" strip will reappear on its own.
 export type AbridgedOp = { op: string; brand: string; clearance: string; note: string };
-export const abridgedOps: AbridgedOp[] = [
-  {
-    op: "WOWS-25",
-    brand: "World of Warships",
-    clearance: "INDEPENDENT · 2025",
-    note: "Four-creator influencer campaign promoting World of Warships.",
-  },
-  {
-    op: "AMZN-BBD",
-    brand: "Amazon Big Billion Days 2024",
-    clearance: "VIA MAVERIK · 2024",
-    note: "Selected and managed 15+ influencers livestreaming on Amazon India during the Big Billion Days sale, owned end to end.",
-  },
-  {
-    op: "INTEL-AMB",
-    brand: "Intel Ambassador Program",
-    clearance: "VIA MAVERIK · 2024",
-    note: "Advised Intel India on selecting the year's influencer brand ambassadors.",
-  },
-  {
-    op: "VWSNC-LNCH",
-    brand: "ViewSonic Monitor Launch",
-    clearance: "VIA MAVERIK · 2024",
-    note: "Planned and ran a long-term influencer program around ViewSonic's monitor launches.",
-  },
+export const abridgedOps: AbridgedOp[] = [];
+
+// Hand-picked showcase order for the "Curated" sort (the default). Edit freely;
+// reorder to taste. Any slug not listed here falls to the end, newest first.
+export const CURATED_ORDER: string[] = [
+  "samsung-2025",
+  "amd-gameon",
+  "riot-convergence",
+  "lenovo-techworld",
+  "college-rivals",
+  "comiccon-delhi",
+  "waves-summit",
+  "comiccon-bengaluru",
+  "samsung-2024",
+  "freefire-jjk",
+  "amazon-bbd",
+  "world-of-warships",
+  "intel-ambassador",
+  "viewsonic-launch",
 ];

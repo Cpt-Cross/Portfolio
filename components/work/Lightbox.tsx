@@ -59,7 +59,7 @@ export function Lightbox({ images, index, title, onIndex, onClose }: Props) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-[200] bg-void/95 backdrop-blur-sm scanlines flex flex-col"
+      className="fixed inset-0 z-[200] bg-void/95 scanlines flex flex-col"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

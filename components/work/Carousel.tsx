@@ -7,8 +7,16 @@ import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import type { GalleryImage } from "@/lib/galleries.generated";
 import { Lightbox } from "./Lightbox";
 
-export function Carousel({ images, title }: { images: GalleryImage[]; title: string }) {
-  const [index, setIndex] = useState(0);
+export function Carousel({
+  images,
+  title,
+  initialIndex = 0,
+}: {
+  images: GalleryImage[];
+  title: string;
+  initialIndex?: number;
+}) {
+  const [index, setIndex] = useState(Math.min(Math.max(initialIndex, 0), Math.max(images.length - 1, 0)));
   const [zoom, setZoom] = useState(false);
   const count = images.length;
 
@@ -66,9 +74,6 @@ export function Carousel({ images, title }: { images: GalleryImage[]; title: str
               />
             </motion.div>
           </AnimatePresence>
-
-          {/* faint scan sweep on change (off under reduced-motion via globals) */}
-          <span key={`sweep-${index}`} className="cc-avatar-scan opacity-40" aria-hidden />
 
           {/* counter + zoom hint */}
           <div className="absolute top-2.5 left-3 font-mono text-[11px] text-tac bg-void/60 px-1.5 py-0.5">
